@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PorscheDesignSystemProvider } from "@porsche-design-system/components-react/ssr";
+import {
+  getComponentChunkLinks,
+  getFontLinks,
+  getIconLinks,
+  getMetaTagsAndIconLinks,
+} from "@porsche-design-system/components-react/partials";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +34,19 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        {/* preloads fonts */}
+        {getFontLinks({ format: "jsx" })}
+        {/* preloads icons */}
+        {getIconLinks({ format: "jsx" })}
+        {/* preloads components */}
+        {getComponentChunkLinks({ format: "jsx" })}
+        {/* injects favicon, apple touch icons, android touch icons, etc. */}
+        {getMetaTagsAndIconLinks({ appTitle: "Porsche", format: "jsx" })}
+      </head>
+      <body className="min-h-full flex flex-col">
+        <PorscheDesignSystemProvider>{children}</PorscheDesignSystemProvider>
+      </body>
     </html>
   );
 }
